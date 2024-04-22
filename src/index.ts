@@ -1,9 +1,8 @@
 import compressible from 'compressible'
 import { Elysia, mapResponse } from 'elysia'
-import { gzipSync, deflateSync, type ZlibCompressionOptions } from 'bun'
 import { CompressionStream } from './stream'
 import { isReadableStream } from './utils'
-// import { brotliCompressSync, BrotliOptions } from 'zlib'
+import {  BrotliOptions, deflateSync, gzipSync,type ZlibOptions } from 'zlib'
 
 export type CompressionOptions = {
   /**
@@ -11,13 +10,13 @@ export type CompressionOptions = {
    *
    * Algorithm to use for compression.
    */
-  type: 'gzip' | 'deflate' // | 'brotli'
+  type: 'gzip' | 'deflate' 
   /**
    * @param {Object}
    *
    * Options for the compression algorithm.
    */
-  options?: ZlibCompressionOptions // | BrotliOptions
+  options?: BrotliOptions 
   /**
    * @default `utf-8`
    *
@@ -79,11 +78,11 @@ export const compression = (
       : type === 'gzip'
         ? gzipSync(
           toBuffer(ctx.response, encoding),
-          options as ZlibCompressionOptions,
+          options as ZlibOptions,
         )
         : deflateSync(
           toBuffer(ctx.response, encoding),
-          options as ZlibCompressionOptions,
+          options as ZlibOptions,
         )
     ctx.response = new Response(compressedBody, {
       headers: res.headers,
